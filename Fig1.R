@@ -10,11 +10,9 @@ g_legend<-function(a.gplot){
   legend <- tmp$grobs[[leg]]
   return(legend)}
 
-
-setwd("~/Dropbox/Articoli/Perspective Frontiers/Hyperossia2/Analysis/")
-
-mangrovie<-read.table("RedSea.Mangrove.csv",header=T,sep=",")
-##converto la data in maniera corretta con lubridate
+##Refer to the Supplementary Data 1 provided with the paper
+mangrovie<-read.table("TabS1D.txt",header=T,sep=",")
+##data conversion using lubridate
 pippo<-as_datetime(mangrovie$grouped_time,format = "%Y-%m-%d %H:%M") ##best conversion in datetime
 head(pippo)
 mangrovie$datetime<-pippo
@@ -41,13 +39,14 @@ a1mangrovie<-ggplot(mangrovie, aes(datetime, O2sat)) +
 
 a1mangrovie
 
-ambiente<-read.table("Environmental_Variabiles_Total_hourly.txt",header=T,sep="\t")
-##converto la data in maniera corretta con lubridate
+##TabS1A+TabS1B+TabS1C is the collate table forom the three suppplementay table provided with the Supplementary Data 1 provided with the paper
+ambiente<-read.table("TabS1A+TabS1B+TabS1C.txt",header=T,sep="\t")
+##data conversion using lubridate
 pippo<-as_datetime(ambiente$Date,format = "%Y-%m-%d %H:%M") ##best conversion in datetime
 head(pippo)
 ambiente$datetime<-pippo
 
-## rinomino i fattori
+## renaming the factors
 ambiente$Location<-factor(ambiente$Location,levels = c("Cold Temperate","Warm Temperate","Tropical"),labels = c("Cold Temperate","Warm Temperate","Tropical"))
 
 cold<-subset(ambiente,ambiente$Location=="Cold Temperate")
@@ -56,8 +55,8 @@ cold<-subset(cold,cold$Temperature_C<16)
 temp<-subset(ambiente,ambiente$Location=="Warm Temperate")
 hot<-subset(ambiente,ambiente$Location=="Tropical")
 
-## plotto il grafico
-a1<-ggplot(temp, aes(datetime, DissolvedOxygenSaturation2)) + 
+## plot
+a1<-ggplot(temp, aes(datetime, DissolvedOxygenSaturation2)) +
   theme_classic() +
   geom_point(aes(color=Temperature_C),stroke = 0.01) +
   #facet_wrap(~Location, ncol= 1) +
@@ -164,7 +163,7 @@ ggplot(test2mean,aes(test2mean$Varianzatemp,test2mean$VarianzaOx))+geom_point()+
 
 
 
-# Grafico per le analysis di deltaT giornalieri infunzione dei deltaOx gironalieri
+# Plot for analyis of the daily DeltaT as a function of daily DeltaOx
 ggplot(test2mean[test2mean$Location=='Cold Temperate',],aes(x=Temperature_C,y=VarianzaOx))+
   geom_point()+stat_smooth(method="lm",color="red")+
   theme_classic() + 
